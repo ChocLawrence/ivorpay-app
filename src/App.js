@@ -7,17 +7,18 @@ import AuthService from "./services/auth.service";
 
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Home from "./components/Home";
 import Profile from "./components/Profile";
-import BoardUser from "./components/BoardUser";
-import BoardModerator from "./components/BoardModerator";
-import BoardAdmin from "./components/BoardAdmin";
+import UserTransactions from "./components/UserTransactions";
+import UserTransfer from "./components/UserTransfer";
+import UserDeposit from "./components/UserDeposit";
+import UserWithdraw from "./components/UserWithdraw";
+import AdminUsers from "./components/AdminUsers";
+import AdminTransactions from "./components/AdminTransactions";
 
 // import AuthVerify from "./common/AuthVerify";
 import EventBus from "./common/EventBus";
 
 const App = () => {
-  const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
   const [currentUser, setCurrentUser] = useState(undefined);
 
@@ -26,8 +27,11 @@ const App = () => {
 
     if (user) {
       setCurrentUser(user);
-      setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
-      setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
+      if (user.data.role === "admin") {
+        setShowAdminBoard(true);
+      }
+      // setShowModeratorBoard(user.roles.includes("ROLE_MODERATOR"));
+      // setShowAdminBoard(user.roles.includes("ROLE_ADMIN"));
     }
 
     EventBus.on("logout", () => {
@@ -41,7 +45,6 @@ const App = () => {
 
   const logOut = () => {
     AuthService.logout();
-    setShowModeratorBoard(false);
     setShowAdminBoard(false);
     setCurrentUser(undefined);
   };
@@ -49,36 +52,58 @@ const App = () => {
   return (
     <div>
       <nav className="navbar navbar-expand navbar-dark bg-dark">
-        <Link to={"/"} className="navbar-brand">
-          bezKoder
-        </Link>
+        <div className="navbar-brand">IVORPAY</div>
         <div className="navbar-nav mr-auto">
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <Link to={"/home"} className="nav-link">
               Home
             </Link>
-          </li>
+          </li> */}
 
-          {showModeratorBoard && (
+          {showAdminBoard && (
             <li className="nav-item">
-              <Link to={"/mod"} className="nav-link">
-                Moderator Board
+              <Link to={"/alltransactions"} className="nav-link">
+                All Transactions
               </Link>
             </li>
           )}
 
           {showAdminBoard && (
             <li className="nav-item">
-              <Link to={"/admin"} className="nav-link">
-                Admin Board
+              <Link to={"/users"} className="nav-link">
+                All Users
               </Link>
             </li>
           )}
 
           {currentUser && (
             <li className="nav-item">
-              <Link to={"/user"} className="nav-link">
-                User
+              <Link to={"/deposit"} className="nav-link">
+                Deposit
+              </Link>
+            </li>
+          )}
+
+          {currentUser && (
+            <li className="nav-item">
+              <Link to={"/transfer"} className="nav-link">
+                Transfer
+              </Link>
+            </li>
+          )}
+
+          {currentUser && (
+            <li className="nav-item">
+              <Link to={"/withdraw"} className="nav-link">
+                Withdraw
+              </Link>
+            </li>
+          )}
+
+          {currentUser && (
+            <li className="nav-item">
+              <Link to={"/transactions"} className="nav-link">
+                Transactions
               </Link>
             </li>
           )}
@@ -88,7 +113,7 @@ const App = () => {
           <div className="navbar-nav ml-auto">
             <li className="nav-item">
               <Link to={"/profile"} className="nav-link">
-                {currentUser.username}
+                {currentUser.data.username}
               </Link>
             </li>
             <li className="nav-item">
@@ -116,14 +141,16 @@ const App = () => {
 
       <div className="container mt-3">
         <Routes>
-          <Route exact path={"/"} element={<Home />} />
-          <Route exact path={"/home"} element={<Home />} />
+          <Route exact path={"/"} element={<Profile />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/profile" element={<Profile />} />
-          <Route path="/user" element={<BoardUser />} />
-          <Route path="/mod" element={<BoardModerator />} />
-          <Route path="/admin" element={<BoardAdmin />} />
+          <Route path="/deposit" element={<UserDeposit />} />
+          <Route path="/transfer" element={<UserTransfer />} />
+          <Route path="/withdraw" element={<UserWithdraw />} />
+          <Route path="/transactions" element={<UserTransactions />} />
+          <Route path="/alltransactions" element={<AdminTransactions />} />
+          <Route path="/users" element={<AdminUsers />} />
         </Routes>
       </div>
 

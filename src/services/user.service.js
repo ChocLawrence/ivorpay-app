@@ -1,28 +1,35 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api/test/";
+const API_URL = "http://localhost:3000/";
 
-const getPublicContent = () => {
-  return axios.get(API_URL + "all");
+const getAllUsers = () => {
+  return axios.get(API_URL + "users");
 };
 
-const getUserBoard = () => {
-  return axios.get(API_URL + "user");
+const getOneUser = (id) => {
+  return axios.get(API_URL + "users/" + id);
 };
 
-const getModeratorBoard = () => {
-  return axios.get(API_URL + "mod");
+const inviteUser = (email) => {
+  return axios.post(API_URL + "invite", {
+    email,
+  });
 };
 
-const getAdminBoard = () => {
-  return axios.get(API_URL + "admin");
+const enableUser = (id) => {
+  return axios.get(API_URL + "users/e/" + id);
+};
+
+const disableUser = (id) => {
+  return axios.get(API_URL + "users/d/" + id);
 };
 
 const UserService = {
-  getPublicContent,
-  getUserBoard,
-  getModeratorBoard,
-  getAdminBoard,
-}
+  getAllUsers,
+  getOneUser,
+  inviteUser,
+  enableUser,
+  disableUser,
+};
 
 export default UserService;
